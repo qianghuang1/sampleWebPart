@@ -1,0 +1,27 @@
+@import '~office-ui-fabric-react/dist/sass/References';
+@import '~office-ui-fabric-react/dist/sass/themeOverrides.scss';
+@import '~office-ui-fabric-react/dist/sass/semanticSlots.scss';
+
+.mainContainer {
+  background-color: #fff4ce;
+  padding: 20px;
+}
+
+.consentButton {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.grantPermissionWarningContent {
+  color: $ms-color-gray210;
+  font-size: $ms-font-size-l;
+  margin-bottom: 20px;
+
+  display: flex;
+  flex-direction: row;
+
+  .warningIcon {
+    color: #d83b01;
+    @include ms-margin-right(10px);
+  }
+}
