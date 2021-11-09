@@ -20,13 +20,12 @@ export interface IQiangTestWebPartProps {
 }
 
 export default class QiangTestWebPart extends BaseClientSideWebPart<IQiangTestWebPartProps> {
-
   private needConsent: boolean | undefined = undefined;
+  private appAADId: string | undefined = undefined;
 
-  
   public onInit(): Promise<void> {
     // This will be in the web part lifecycle management. Here is a demo of concept.
-
+    this.appAADId = new URL(window.location.href).searchParams.get('webPartAADAppId');
     return this.context.aadTokenProviderFactory.getTokenProvider().then((tokenProvider) => {
       tokenProvider.getToken('https://graph.microsoft.com', false)
         .then(token => {
@@ -35,8 +34,8 @@ export default class QiangTestWebPart extends BaseClientSideWebPart<IQiangTestWe
         })
         .catch(e => {
           //if (e.toString().indexOf("AADSTS65001") != -1) {
-            this.needConsent = true;
-            this.render();
+          this.needConsent = true;
+          this.render();
           //}
         })
     }).then(super.onInit);
@@ -44,13 +43,16 @@ export default class QiangTestWebPart extends BaseClientSideWebPart<IQiangTestWe
 
   public render(): void {
     if (this.needConsent == undefined) {
-      this.domElement.innerHTML =`<div></div>`;
+      this.domElement.innerHTML = `<div></div>`;
       return;
     }
 
     if (this.needConsent) {
       ReactDOM.render(
-        React.createElement(PermissionRequest, { tenantId: this.context.pageContext.aadInfo.tenantId.toString() }),
+        React.createElement(PermissionRequest, {
+          tenantId: this.context.pageContext.aadInfo.tenantId.toString(),
+          clientId: this.appAADId
+        }),
         this.domElement
       );
       return;
